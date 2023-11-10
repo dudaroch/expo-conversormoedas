@@ -9,6 +9,27 @@ export default function App() {
   const [moedaDestino, setMoedaDestino] = useState('USD')
   const [valorEntrada, setValorEntrada] = useState('33.33')
   const [resultado, setResultado] = useState('')
+
+  const buscarHandle = async () => {
+    let URL = `https://economia.awesomeapi.com.br/last/${moedaOrigem}-${moedaDestino}`
+    try {
+      let page = await fetch(URL)
+      let json = await page.json()
+      console.log(json)
+      let indice = parseFloat(json[`${moedaOrigem}${moedaDestino}`].high)
+      // setValorConvertido(indice)
+      let valor = parseFloat(valorEntrada)
+      setResultado((indice*valor).toFixed(2))
+    } catch (error) {
+      setResultado(`Erro: ${error.message}`)
+    }
+    // setValorConvertido(URL);
+  }
+
+  const limparResultado = ()=> {
+    setResultado('')
+  }
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Conversor de Moedas</Text>
@@ -49,12 +70,14 @@ export default function App() {
         keyboardType='numeric'>
         </TextInput>
       </View>
-      <Pressable style={styles.button}>
+      <Pressable style={styles.button} onPress={buscarHandle}>
         <Text style={styles.title}> Converter </Text>
       </Pressable>
-      <Pressable style={styles.button}>
+      <Text style={styles.invisivel}> OI </Text>
+      <Pressable style={styles.button} onPress={limparResultado}>
         <Text style={styles.title}> Limpar </Text>
       </Pressable>
+      <Text style={styles.resultado}>{`Resultado: ${resultado}`}</Text>
 
       <StatusBar style="auto" />
     </View>
@@ -65,37 +88,43 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#000',
+    backgroundColor: '#e7ffff',
     alignItems: 'center',
     justifyContent: 'center',
   },
 
   title: {
-    color: '#fff'
+    color: '#247777'
   },
 
   picker: {
-    color: '#fff',
-    backgroundColor: '#000',
+    color: '#247777',
+    backgroundColor: '#247777',
     width: 200,
     height: 50,
   },
   input: {
-    color: '#fff',
+    color: '#247777',
     textAlign: 'right',
     height: 40,
   }, 
   tbMoeda: {
-    color: '#fff'
+    color: '#247777'
   },
   button: {
     width: 200,
     height: 40,
     paddingBottom: 10,
-    backgroundColor: '#999',
+    backgroundColor: '#247777',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: 5
+    borderRadius: 10
+  },
+  resultado: {
+    color: 'white'
+  },
+  invisivel: {
+    color: '#e7ffff'
   }
 });
